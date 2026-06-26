@@ -43,8 +43,8 @@ class MemoizeTest {
     }
 
     @Test
-    void builder_nullPackageName_throwsNPE() {
-        assertThrows(NullPointerException.class, () ->
+    void builder_nullPackageName_throwsIAE() {
+        assertThrows(IllegalArgumentException.class, () ->
                 Memoize.create().scanIn(null)
         );
     }

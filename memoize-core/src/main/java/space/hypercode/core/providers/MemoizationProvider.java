@@ -1,11 +1,8 @@
 package space.hypercode.core.providers;
 
-import lombok.Getter;
-
 import java.time.Duration;
 import java.util.Optional;
 
-@Getter
 public abstract class MemoizationProvider {
 
     private final String cacheName;
@@ -19,6 +16,18 @@ public abstract class MemoizationProvider {
        this.cacheName = cacheName;
        this.ttl = ttl;
        this.maxSize = maxSize;
+    }
+
+    public String getCacheName() {
+        return cacheName;
+    }
+
+    public Duration getTtl() {
+        return ttl;
+    }
+
+    public long getMaxSize() {
+        return maxSize;
     }
 
     public abstract Optional<Object> getValueIfPresent(final String key);

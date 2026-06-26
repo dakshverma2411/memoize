@@ -8,7 +8,6 @@ import space.hypercode.core.configs.MemoizationConfigs;
 import space.hypercode.providers.caffeine.CaffeineMemoizationProviderFactory;
 
 import java.lang.reflect.Field;
-import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -36,20 +35,24 @@ public class ExampleTests {
 
     @Test
     void testSingleArgUsingConverter() {
-        Instant startTime = Instant.now();
+        long startMs = System.currentTimeMillis();
         System.out.println(app.square(2L));
-        System.out.println(app.square(2L)); // query again
-        Instant endTime = Instant.now();
-        assertTrue(endTime.getEpochSecond() - startTime.getEpochSecond() < 3);
+        System.out.println(app.square(2L)); // query again - should be cached
+        long elapsedMs = System.currentTimeMillis() - startMs;
+        // First call takes ~2s (cache miss), second should be instant (cache hit).
+        // Total should be ~2s. Allow up to 3s for slow CI, but fail if >3s (indicates no caching).
+        assertTrue(elapsedMs < 3000,
+                "Expected < 3000ms (caching should avoid second 2s wait), but took " + elapsedMs + "ms");
     }
 
     @Test
     void testSingleUsingInterface() {
-        Instant startTime = Instant.now();
+        long startMs = System.currentTimeMillis();
         app.square(new MyLong(2L));
-        app.square(new MyLong(2L)); // query again
-        Instant endTime = Instant.now();
-        assertTrue(endTime.getEpochSecond() - startTime.getEpochSecond() < 3);
+        app.square(new MyLong(2L)); // query again - should be cached
+        long elapsedMs = System.currentTimeMillis() - startMs;
+        assertTrue(elapsedMs < 3000,
+                "Expected < 3000ms (caching should avoid second 2s wait), but took " + elapsedMs + "ms");
     }
 
 }
