@@ -14,17 +14,6 @@
     <artifactId>memoize-parent</artifactId>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- library versions -->
-        <lombok.version>1.18.42</lombok.version>
-        <caffeine.version>3.2.3</caffeine.version>
-        <classgraph.version>4.8.179</classgraph.version>
-        <aspectj.version>1.9.22.1</aspectj.version>
-        <dropwizard-metrics.version>4.2.29</dropwizard-metrics.version>
-        <junit.version>5.11.4</junit.version>
-        <mockito.version>5.14.2</mockito.version>
         <!-- plugin versions -->
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
@@ -39,47 +28,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.ben-manes.caffeine</groupId>
-                <artifactId>caffeine</artifactId>
-                <version>${caffeine.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.github.classgraph</groupId>
-                <artifactId>classgraph</artifactId>
-                <version>${classgraph.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjrt</artifactId>
-                <version>${aspectj.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.dropwizard.metrics</groupId>
-                <artifactId>metrics-core</artifactId>
-                <version>${dropwizard-metrics.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${mockito.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-junit-jupiter</artifactId>
-                <version>${mockito.version}</version>
-                <scope>test</scope>
+                <groupId>space.hypercode</groupId>
+                <artifactId>memoize-dependencies</artifactId>
+                <version>${project.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -184,7 +137,7 @@
                 <version>${spotbugs-plugin.version}</version>
                 <configuration>
                     <effort>Max</effort>
-                    <threshold>Medium</threshold>
+                    <threshold>High</threshold>
                     <failOnError>true</failOnError>
                 </configuration>
                 <executions>

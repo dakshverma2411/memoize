@@ -1,5 +1,6 @@
 package space.hypercode.core.aspect;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -7,11 +8,13 @@ import org.aspectj.lang.reflect.MethodSignature;
 import space.hypercode.core.Memoize;
 import space.hypercode.core.annotations.MemoizeThis;
 import space.hypercode.core.configs.MemoizationConfig;
-import space.hypercode.core.configs.MemoizationConfigs;
 import space.hypercode.core.converters.ConverterResolver;
 import space.hypercode.core.converters.MemoizationKeyConverter;
 import space.hypercode.core.converters.MultiArgMemoizationKeyConverter;
 import space.hypercode.core.converters.SingleArgMemoizationKeyConverter;
+import space.hypercode.core.eligibility.EligibilityCriteria;
+import space.hypercode.core.eligibility.EligibilityCriteriaResolver;
+import space.hypercode.core.models.MemoizeCallContext;
 import space.hypercode.core.providers.MemoizationProvider;
 import space.hypercode.core.providers.MemoizationProviderFactory;
 
@@ -145,9 +148,11 @@ public class MemoizeAspect {
         if (key == null || key.isEmpty()) {
             return;
         }
-
-        final boolean cacheNulls = resolveCacheNulls(annotation, memoizationName, memoize.getConfigs());
-        if (result == null && !cacheNulls) {
+        final EligibilityCriteriaResolver criteriaResolver = memoize.getEligibilityCriteriaResolver();
+        final EligibilityCriteria criteria = criteriaResolver.resolve(annotation, memoizationName);
+        final MemoizeCallContext context = buildCallContext(joinPoint, result);
+        final boolean shouldMemoize = criteria.shouldMemoize(context);
+        if (!shouldMemoize) {
             return;
         }
 
@@ -166,6 +171,13 @@ public class MemoizeAspect {
             recordMetricSafely(() -> metrics.recordPut(memoizationName));
             recordMetricSafely(() -> metrics.recordPutDuration(memoizationName, durationNanos));
         }
+    }
+
+    private MemoizeCallContext buildCallContext(final JoinPoint joinPoint, final Object result) {
+        return MemoizeCallContext.builder()
+            .returnValue(result)
+            .args(joinPoint.getArgs())
+            .build();
     }
 
     private String resolveMemoizationName(final MemoizeThis annotation,
@@ -245,18 +257,6 @@ public class MemoizeAspect {
                                               final Memoize memoize) {
         final MemoizationProviderFactory factory = memoize.getProviderFactory();
         return factory.create(memoizationName, ttl, maxSize);
-    }
-
-    private boolean resolveCacheNulls(final MemoizeThis annotation,
-                                      final String memoizationName,
-                                      final MemoizationConfigs configs) {
-        if (annotation.useConfig()) {
-            final Optional<MemoizationConfig> configOpt = configs.get(memoizationName);
-            if (configOpt.isPresent()) {
-                return configOpt.get().isCacheNulls();
-            }
-        }
-        return annotation.cacheNulls();
     }
 
     /**

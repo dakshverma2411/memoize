@@ -67,6 +67,26 @@ public class ExampleTests {
 
     }
 
+    @Test
+    void testNonNullCriteria() {
+        // even
+        long startMs = System.currentTimeMillis();
+        assertEquals(new MyLong(8L), app.cube(new MyLong(2L)));
+        assertEquals(new MyLong(8L), app.cube(new MyLong(2L)));
+        long elapsedMs = System.currentTimeMillis() - startMs;
+        assertTrue(elapsedMs < 3000,
+            "Expected < 3000ms (caching should avoid second 2s wait), but took " + elapsedMs + "ms");
+
+        // odd
+        System.currentTimeMillis();
+        assertEquals(new MyLong(27L), app.cube(new MyLong(3L)));
+        assertEquals(new MyLong(27L), app.cube(new MyLong(3L)));
+        elapsedMs = System.currentTimeMillis() - startMs;
+        assertTrue(elapsedMs > 4000,
+            "Expected > 4000ms (odd values not cached), but took " + elapsedMs + "ms");
+
+    }
+
     private void tryWait(final long millis) {
         try {
             Thread.sleep(millis);

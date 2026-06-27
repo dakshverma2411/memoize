@@ -1,7 +1,9 @@
 package space.hypercode.core;
 
+import lombok.Getter;
 import space.hypercode.core.configs.MemoizationConfigs;
 import space.hypercode.core.converters.ConverterResolver;
+import space.hypercode.core.eligibility.EligibilityCriteriaResolver;
 import space.hypercode.core.init.MemoizeInitializer;
 import space.hypercode.core.metrics.MemoizationMetrics;
 import space.hypercode.core.metrics.NoOpMetrics;
@@ -13,11 +15,19 @@ public class Memoize {
 
     private static volatile Memoize INSTANCE;
 
+    @Getter
     private final String packageName;
+    @Getter
     private final MemoizationConfigs configs;
+    @Getter
     private final MemoizationProviderFactory providerFactory;
+    @Getter
     private final MemoizationMetrics metrics;
+    @Getter
     private final ConverterResolver converterResolver;
+    @Getter
+    private final EligibilityCriteriaResolver eligibilityCriteriaResolver;
+
 
     private Memoize(final String packageName,
                     final MemoizationConfigs configs,
@@ -29,26 +39,7 @@ public class Memoize {
         this.providerFactory = Preconditions.validateNonNull(providerFactory, "providerFactory can't be null");
         this.metrics = metrics == null ? new NoOpMetrics() : metrics;
         this.converterResolver = new ConverterResolver(this.configs);
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public MemoizationConfigs getConfigs() {
-        return configs;
-    }
-
-    public MemoizationProviderFactory getProviderFactory() {
-        return providerFactory;
-    }
-
-    public MemoizationMetrics getMetrics() {
-        return metrics;
-    }
-
-    public ConverterResolver getConverterResolver() {
-        return converterResolver;
+        this.eligibilityCriteriaResolver = new EligibilityCriteriaResolver(this.configs);
     }
 
     /**
