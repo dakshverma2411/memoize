@@ -1,8 +1,9 @@
 title: Memoize
 description: Compile-time AspectJ memoization for Java
-remote_theme: just-the-docs/just-the-docs
+theme: just-the-docs
 
 url: https://dakshverma2411.github.io/memoize
+baseurl: /memoize
 
 color_scheme: default
 
@@ -27,6 +28,7 @@ footer_content: "Memoize is licensed under the <a href=\"https://github.com/daks
 
 plugins:
   - jekyll-seo-tag
+  - jekyll-include-cache
 
 kramdown:
   syntax_highlighter_opts:
