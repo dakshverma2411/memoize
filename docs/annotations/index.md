@@ -14,8 +14,6 @@ Memoize uses annotations to mark methods for caching. The annotation is processe
 | Annotation | Status | Description |
 |---|---|---|
 | [`@MemoizeThis`]({% link annotations/memoize-this.md %}) | Available | Cache method return values with configurable TTL, size, key converter, and eligibility criteria |
-| [`@CacheEvict`]({% link annotations/cache-evict.md %}) | Planned | Evict cache entries programmatically |
-| [`@CachePut`]({% link annotations/cache-put.md %}) | Planned | Always execute the method and update the cache |
 
 ## How It Works
 
