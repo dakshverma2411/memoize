@@ -4,7 +4,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import space.hypercode.core.Memoize;
+import space.hypercode.core.configs.MemoizationConfig;
 import space.hypercode.core.configs.MemoizationConfigs;
+import space.hypercode.core.converters.MemoizableKeyConverter;
 import space.hypercode.providers.caffeine.CaffeineMemoizationProviderFactory;
 
 import java.lang.reflect.Field;
@@ -19,9 +21,15 @@ public class ExampleTests {
     @BeforeEach
     void setup() {
         app = new App();
+        MemoizationConfigs configs = new MemoizationConfigs();
+        configs.add("test-config-cache", MemoizationConfig.builder()
+                .ttl(java.time.Duration.ofSeconds(60))
+                .maxSize(100)
+                .converter(new MemoizableKeyConverter())
+                .build());
         Memoize.create()
                 .scanIn("space.hypercode.memoize.examples")
-                .configs(new MemoizationConfigs())
+                .configs(configs)
                 .providerFactory(new CaffeineMemoizationProviderFactory())
                 .build()
                 .start();

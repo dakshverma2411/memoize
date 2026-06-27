@@ -71,12 +71,23 @@ public class EligibilityCriteriaResolver {
     }
 
     private EligibilityCriteria instantiateCriteria(final Class<? extends EligibilityCriteria> clazz) {
+        // 1. Try static getInstance() method (singleton pattern)
         try {
-            return clazz.getDeclaredConstructor().newInstance();
+            final var method = clazz.getDeclaredMethod("getInstance");
+            return (EligibilityCriteria) method.invoke(null);
+        } catch (final Exception ignored) {
+            // not a singleton, try constructor
+        }
+
+        // 2. Try no-arg constructor
+        try {
+            final var constructor = clazz.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return constructor.newInstance();
         } catch (final Exception e) {
             throw new IllegalStateException(
                     "Failed to instantiate eligibility criteria: " + clazz.getName()
-                            + ". Ensure it has a public no-arg constructor.", e);
+                            + ". Ensure it has a public static getInstance() method or a no-arg constructor.", e);
         }
     }
 

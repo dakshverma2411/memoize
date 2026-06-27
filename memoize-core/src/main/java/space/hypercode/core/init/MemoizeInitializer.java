@@ -111,13 +111,11 @@ public class MemoizeInitializer {
 
         // Validate useConfig path
         if (annotation.useConfig()) {
-            final String memoizationName = resolvememoizationName(annotation, method);
+            final String memoizationName = resolveMemoizationName(annotation, method);
             final Optional<MemoizationConfig> config = configs.get(memoizationName);
 
             if (config.isEmpty()) {
                 errors.add(methodRef + ": useConfig=true but no config registered for cache name '" + memoizationName + "'.");
-            } else if (config.get().getConverter() == null) {
-                errors.add(methodRef + ": useConfig=true but config for '" + memoizationName + "' has no converter.");
             }
             return;
         }
@@ -159,7 +157,7 @@ public class MemoizeInitializer {
         return paramTypes.length == 1 && Memoizable.class.isAssignableFrom(paramTypes[0]);
     }
 
-    private String resolvememoizationName(final MemoizeThis annotation, final Method method) {
+    private String resolveMemoizationName(final MemoizeThis annotation, final Method method) {
         if (annotation.name() != null && !annotation.name().isEmpty()) {
             return annotation.name();
         }
