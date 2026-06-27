@@ -80,14 +80,14 @@ class MemoizeTest {
      */
     private static class StubProviderFactory implements MemoizationProviderFactory {
         @Override
-        public MemoizationProvider create(final String cacheName, final Duration ttl, final long maxSize) {
-            return new StubProvider(cacheName, ttl, maxSize);
+        public MemoizationProvider create(final String memoizationName, final Duration ttl, final long maxSize) {
+            return new StubProvider(memoizationName, ttl, maxSize);
         }
     }
 
     private static class StubProvider extends MemoizationProvider {
-        StubProvider(final String cacheName, final Duration ttl, final long maxSize) {
-            super(cacheName, ttl, maxSize);
+        StubProvider(final String memoizationName, final Duration ttl, final long maxSize) {
+            super(memoizationName, ttl, maxSize);
         }
 
         @Override

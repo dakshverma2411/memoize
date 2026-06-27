@@ -22,6 +22,12 @@ public class App {
         return new MyLong(myLong.getValue() * myLong.getValue());
     }
 
+    @MemoizeThis(ttlInMs = 1L, size = 10, cacheNulls = false)
+    public MyLong cube(final MyLong myLong) {
+        tryWait(Duration.ofMillis(2000));
+        return new MyLong(myLong.getValue() * myLong.getValue() * myLong.getValue());
+    }
+
     private void tryWait(final Duration time) {
         try {
             Thread.sleep(time.toMillis());

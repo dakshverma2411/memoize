@@ -85,11 +85,11 @@ public class MemoizeAspect {
     private Object tryGetFromCache(final ProceedingJoinPoint joinPoint,
                                    final MemoizeThis annotation,
                                    final Memoize memoize) {
-        final String cacheName = resolveCacheName(annotation, joinPoint);
+        final String memoizationName = resolveMemoizationName(annotation, joinPoint);
 
         final ConverterResolver converterResolver = memoize.getConverterResolver();
         final Object[] args = joinPoint.getArgs();
-        final Optional<MemoizationKeyConverter> converterOpt = converterResolver.resolve(annotation, cacheName, args);
+        final Optional<MemoizationKeyConverter> converterOpt = converterResolver.resolve(annotation, memoizationName, args);
 
         if (converterOpt.isEmpty()) {
             return CACHE_MISS;
@@ -100,7 +100,7 @@ public class MemoizeAspect {
             return CACHE_MISS;
         }
 
-        final MemoizationProvider provider = getOrCreateProvider(cacheName, annotation, memoize);
+        final MemoizationProvider provider = getOrCreateProvider(memoizationName, annotation, memoize);
         if (provider == null) {
             return CACHE_MISS;
         }
@@ -112,11 +112,11 @@ public class MemoizeAspect {
         final long durationNanos = System.nanoTime() - start;
 
         if (metrics != null) {
-            recordMetricSafely(() -> metrics.recordGetDuration(cacheName, durationNanos));
+            recordMetricSafely(() -> metrics.recordGetDuration(memoizationName, durationNanos));
             if (cachedValue.isPresent()) {
-                recordMetricSafely(() -> metrics.recordHit(cacheName));
+                recordMetricSafely(() -> metrics.recordHit(memoizationName));
             } else {
-                recordMetricSafely(() -> metrics.recordMiss(cacheName));
+                recordMetricSafely(() -> metrics.recordMiss(memoizationName));
             }
         }
 
@@ -131,11 +131,11 @@ public class MemoizeAspect {
                                final MemoizeThis annotation,
                                final Memoize memoize,
                                final Object result) {
-        final String cacheName = resolveCacheName(annotation, joinPoint);
+        final String memoizationName = resolveMemoizationName(annotation, joinPoint);
 
         final ConverterResolver converterResolver = memoize.getConverterResolver();
         final Object[] args = joinPoint.getArgs();
-        final Optional<MemoizationKeyConverter> converterOpt = converterResolver.resolve(annotation, cacheName, args);
+        final Optional<MemoizationKeyConverter> converterOpt = converterResolver.resolve(annotation, memoizationName, args);
 
         if (converterOpt.isEmpty()) {
             return;
@@ -146,12 +146,12 @@ public class MemoizeAspect {
             return;
         }
 
-        final boolean cacheNulls = resolveCacheNulls(annotation, cacheName, memoize.getConfigs());
+        final boolean cacheNulls = resolveCacheNulls(annotation, memoizationName, memoize.getConfigs());
         if (result == null && !cacheNulls) {
             return;
         }
 
-        final MemoizationProvider provider = getOrCreateProvider(cacheName, annotation, memoize);
+        final MemoizationProvider provider = getOrCreateProvider(memoizationName, annotation, memoize);
         if (provider == null) {
             return;
         }
@@ -163,13 +163,13 @@ public class MemoizeAspect {
         final long durationNanos = System.nanoTime() - start;
 
         if (metrics != null) {
-            recordMetricSafely(() -> metrics.recordPut(cacheName));
-            recordMetricSafely(() -> metrics.recordPutDuration(cacheName, durationNanos));
+            recordMetricSafely(() -> metrics.recordPut(memoizationName));
+            recordMetricSafely(() -> metrics.recordPutDuration(memoizationName, durationNanos));
         }
     }
 
-    private String resolveCacheName(final MemoizeThis annotation,
-                                    final ProceedingJoinPoint joinPoint) {
+    private String resolveMemoizationName(final MemoizeThis annotation,
+                                          final ProceedingJoinPoint joinPoint) {
         if (annotation.name() != null && !annotation.name().isEmpty()) {
             return annotation.name();
         }
@@ -208,11 +208,11 @@ public class MemoizeAspect {
         }
     }
 
-    private MemoizationProvider getOrCreateProvider(final String cacheName,
+    private MemoizationProvider getOrCreateProvider(final String memoizationName,
                                                     final MemoizeThis annotation,
                                                     final Memoize memoize) {
         try {
-            return providerCache.computeIfAbsent(cacheName, name -> {
+            return providerCache.computeIfAbsent(memoizationName, name -> {
                 final Duration ttl;
                 final long maxSize;
 
@@ -234,24 +234,24 @@ public class MemoizeAspect {
                 return createProvider(name, ttl, maxSize, memoize);
             });
         } catch (final Exception e) {
-            LOG.log(Level.WARNING, "Memoize: Failed to create provider for cache '" + cacheName + "'.", e);
+            LOG.log(Level.WARNING, "Memoize: Failed to create provider for cache '" + memoizationName + "'.", e);
             return null;
         }
     }
 
-    private MemoizationProvider createProvider(final String cacheName,
+    private MemoizationProvider createProvider(final String memoizationName,
                                               final Duration ttl,
                                               final long maxSize,
                                               final Memoize memoize) {
         final MemoizationProviderFactory factory = memoize.getProviderFactory();
-        return factory.create(cacheName, ttl, maxSize);
+        return factory.create(memoizationName, ttl, maxSize);
     }
 
     private boolean resolveCacheNulls(final MemoizeThis annotation,
-                                      final String cacheName,
+                                      final String memoizationName,
                                       final MemoizationConfigs configs) {
         if (annotation.useConfig()) {
-            final Optional<MemoizationConfig> configOpt = configs.get(cacheName);
+            final Optional<MemoizationConfig> configOpt = configs.get(memoizationName);
             if (configOpt.isPresent()) {
                 return configOpt.get().isCacheNulls();
             }

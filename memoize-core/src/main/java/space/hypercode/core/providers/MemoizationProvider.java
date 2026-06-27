@@ -5,21 +5,21 @@ import java.util.Optional;
 
 public abstract class MemoizationProvider {
 
-    private final String cacheName;
+    private final String memoizationName;
     private final Duration ttl;
     private final long maxSize;
 
     public MemoizationProvider(
-            final String cacheName,
+            final String memoizationName,
             final Duration ttl,
             final long maxSize) {
-       this.cacheName = cacheName;
+       this.memoizationName = memoizationName;
        this.ttl = ttl;
        this.maxSize = maxSize;
     }
 
-    public String getCacheName() {
-        return cacheName;
+    public String getMemoizationName() {
+        return memoizationName;
     }
 
     public Duration getTtl() {

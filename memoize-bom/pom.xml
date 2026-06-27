@@ -20,7 +20,21 @@
 
     <dependencyManagement>
         <dependencies>
-
+            <dependency>
+                <groupId>space.hypercode</groupId>
+                <artifactId>memoize-dw-metrics</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>space.hypercode</groupId>
+                <artifactId>memoize-caffeine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>space.hypercode</groupId>
+                <artifactId>memoize-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

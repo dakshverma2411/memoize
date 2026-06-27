@@ -79,7 +79,7 @@ class DropwizardMemoizationMetricsTest {
     }
 
     @Test
-    void differentCacheNames_useSeparateMetrics() {
+    void differentmemoizationNames_useSeparateMetrics() {
         metrics.recordHit("cache-a");
         metrics.recordHit("cache-b");
         metrics.recordHit("cache-b");

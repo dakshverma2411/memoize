@@ -58,7 +58,7 @@ class CaffeineMemoizationProviderTest {
 
     @Test
     void constructor_setsBaseFields() {
-        assertEquals("testCache", provider.getCacheName());
+        assertEquals("testCache", provider.getMemoizationName());
         assertEquals(Duration.ofMinutes(5), provider.getTtl());
         assertEquals(100, provider.getMaxSize());
     }

@@ -11,10 +11,10 @@ public class CaffeineMemoizationProvider extends MemoizationProvider {
 
     private final Cache<String, Object> cache;
 
-    public CaffeineMemoizationProvider(final String cacheName,
+    public CaffeineMemoizationProvider(final String memoizationName,
                                        final Duration ttl,
                                        final long maxSize) {
-        super(cacheName, ttl, maxSize);
+        super(memoizationName, ttl, maxSize);
 
         final Caffeine<Object, Object> builder = Caffeine.newBuilder();
 

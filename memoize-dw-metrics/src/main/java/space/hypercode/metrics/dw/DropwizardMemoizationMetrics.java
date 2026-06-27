@@ -10,12 +10,12 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>Registers the following metrics per cache name:
  * <ul>
- *   <li>{@code memoize.<cacheName>.hits} — counter</li>
- *   <li>{@code memoize.<cacheName>.misses} — counter</li>
- *   <li>{@code memoize.<cacheName>.puts} — counter</li>
- *   <li>{@code memoize.<cacheName>.evictions} — counter</li>
- *   <li>{@code memoize.<cacheName>.get} — timer (cache lookup duration)</li>
- *   <li>{@code memoize.<cacheName>.put} — timer (cache store duration)</li>
+ *   <li>{@code memoize.<memoizationName>.hits} — counter</li>
+ *   <li>{@code memoize.<memoizationName>.misses} — counter</li>
+ *   <li>{@code memoize.<memoizationName>.puts} — counter</li>
+ *   <li>{@code memoize.<memoizationName>.evictions} — counter</li>
+ *   <li>{@code memoize.<memoizationName>.get} — timer (cache lookup duration)</li>
+ *   <li>{@code memoize.<memoizationName>.put} — timer (cache store duration)</li>
  * </ul>
  *
  * <p>Thread safety is provided by the underlying {@link MetricRegistry}.
@@ -34,36 +34,36 @@ public class DropwizardMemoizationMetrics implements MemoizationMetrics {
     }
 
     @Override
-    public void recordHit(final String cacheName) {
-        registry.counter(name(cacheName, "hits")).inc();
+    public void recordHit(final String memoizationName) {
+        registry.counter(name(memoizationName, "hits")).inc();
     }
 
     @Override
-    public void recordMiss(final String cacheName) {
-        registry.counter(name(cacheName, "misses")).inc();
+    public void recordMiss(final String memoizationName) {
+        registry.counter(name(memoizationName, "misses")).inc();
     }
 
     @Override
-    public void recordPut(final String cacheName) {
-        registry.counter(name(cacheName, "puts")).inc();
+    public void recordPut(final String memoizationName) {
+        registry.counter(name(memoizationName, "puts")).inc();
     }
 
     @Override
-    public void recordEviction(final String cacheName) {
-        registry.counter(name(cacheName, "evictions")).inc();
+    public void recordEviction(final String memoizationName) {
+        registry.counter(name(memoizationName, "evictions")).inc();
     }
 
     @Override
-    public void recordGetDuration(final String cacheName, final long durationNanos) {
-        registry.timer(name(cacheName, "get")).update(durationNanos, TimeUnit.NANOSECONDS);
+    public void recordGetDuration(final String memoizationName, final long durationNanos) {
+        registry.timer(name(memoizationName, "get")).update(durationNanos, TimeUnit.NANOSECONDS);
     }
 
     @Override
-    public void recordPutDuration(final String cacheName, final long durationNanos) {
-        registry.timer(name(cacheName, "put")).update(durationNanos, TimeUnit.NANOSECONDS);
+    public void recordPutDuration(final String memoizationName, final long durationNanos) {
+        registry.timer(name(memoizationName, "put")).update(durationNanos, TimeUnit.NANOSECONDS);
     }
 
-    private static String name(final String cacheName, final String metric) {
-        return MetricRegistry.name(PREFIX, cacheName, metric);
+    private static String name(final String memoizationName, final String metric) {
+        return MetricRegistry.name(PREFIX, memoizationName, metric);
     }
 }

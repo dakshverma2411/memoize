@@ -35,17 +35,17 @@ public class ConverterResolver {
      * Resolves the converter for a method call.
      *
      * @param annotation the @Memoize annotation on the method
-     * @param cacheName  the resolved cache name
+     * @param memoizationName  the resolved cache name
      * @param args       the method arguments
      * @return the converter to use, or empty if caching should be skipped
      */
     public Optional<MemoizationKeyConverter> resolve(final MemoizeThis annotation,
-                                                     final String cacheName,
+                                                     final String memoizationName,
                                                      final Object[] args) {
 
         // 1. useConfig=true → get converter from config
         if (annotation.useConfig()) {
-            return resolveFromConfig(cacheName);
+            return resolveFromConfig(memoizationName);
         }
 
         // 2. Explicit converter in annotation (not the sentinel default)
@@ -62,8 +62,8 @@ public class ConverterResolver {
         return Optional.empty();
     }
 
-    private Optional<MemoizationKeyConverter> resolveFromConfig(final String cacheName) {
-        return configs.get(cacheName)
+    private Optional<MemoizationKeyConverter> resolveFromConfig(final String memoizationName) {
+        return configs.get(memoizationName)
                 .map(MemoizationConfig::getConverter);
     }
 

@@ -23,7 +23,7 @@ class CaffeineMemoizationProviderFactoryTest {
     void create_setsFieldsCorrectly() {
         final MemoizationProvider provider = factory.create("myCache", Duration.ofMinutes(5), 100);
 
-        assertEquals("myCache", provider.getCacheName());
+        assertEquals("myCache", provider.getMemoizationName());
         assertEquals(Duration.ofMinutes(5), provider.getTtl());
         assertEquals(100, provider.getMaxSize());
     }
@@ -34,7 +34,7 @@ class CaffeineMemoizationProviderFactoryTest {
         final MemoizationProvider p2 = factory.create("cache2", Duration.ofMinutes(2), 100);
 
         assertNotSame(p1, p2);
-        assertEquals("cache1", p1.getCacheName());
-        assertEquals("cache2", p2.getCacheName());
+        assertEquals("cache1", p1.getMemoizationName());
+        assertEquals("cache2", p2.getMemoizationName());
     }
 }

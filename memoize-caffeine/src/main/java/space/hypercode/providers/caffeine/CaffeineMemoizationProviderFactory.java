@@ -11,7 +11,7 @@ import java.time.Duration;
 public class CaffeineMemoizationProviderFactory implements MemoizationProviderFactory {
 
     @Override
-    public MemoizationProvider create(final String cacheName, final Duration ttl, final long maxSize) {
-        return new CaffeineMemoizationProvider(cacheName, ttl, maxSize);
+    public MemoizationProvider create(final String memoizationName, final Duration ttl, final long maxSize) {
+        return new CaffeineMemoizationProvider(memoizationName, ttl, maxSize);
     }
 }
