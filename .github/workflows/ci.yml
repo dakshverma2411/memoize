@@ -32,12 +32,8 @@ jobs:
       - name: Build and Test
         run: mvn -B clean verify --fail-at-end
 
-      - name: Generate JaCoCo Coverage Report
-        if: matrix.java-version == 21 && always()
-        run: mvn -B jacoco:report
-
       - name: Upload Coverage Report
-        if: matrix.java-version == 21 && always()
+        if: matrix.java-version == 21
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
